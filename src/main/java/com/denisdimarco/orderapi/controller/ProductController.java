@@ -2,6 +2,10 @@ package com.denisdimarco.orderapi.controller;
 
 
 import com.denisdimarco.orderapi.entity.Product;
+import com.denisdimarco.orderapi.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -9,6 +13,9 @@ import java.util.List;
 
 @RestController
 public class ProductController {
+
+    @Autowired
+    private ProductRepository productRepository;
 
     private List<Product> products = new ArrayList<>();
 
@@ -25,51 +32,44 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<Product> findAll() {
-        return this.products;
+    public ResponseEntity<List<Product>> findAll() {
+        List<Product> products = productRepository.findAll();
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 
     @GetMapping("/products/{productId}")
-    public Product findById(@PathVariable("productId") Long productId) {
-        for (Product prod : this.products) {
-            if (prod.getId().longValue() == productId.longValue()) {
-                return prod;
-            }
-        }
-        return null;
+    public ResponseEntity<Product> findById(@PathVariable("productId") Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("The product does not exist"));
+        return new ResponseEntity<Product>(product, HttpStatus.OK);
     }
 
     @PostMapping("/products")
-    public Product create(@RequestBody Product product) {
-
-        this.products.add(product);
-        return product;
+    public ResponseEntity<Product> create(@RequestBody Product product) {
+        Product newProduct = productRepository.save(product);
+        return new ResponseEntity<Product>(newProduct, HttpStatus.CREATED);
     }
 
     @PutMapping("/products")
-    public Product update(@RequestBody Product product) {
-        for (Product prod : this.products) {
-            if (prod.getId().longValue() == product.getId().longValue()) {
-                prod.setName(product.getName());
-                return prod;
-            }
-        }
-        throw new RuntimeException("Product ID not exist");
+    public ResponseEntity<Product> update(@RequestBody Product product) {
+        Product updatedProduct = productRepository.findById(product.getId())
+                .orElseThrow(() -> new RuntimeException("The product does not exist"));
+
+        updatedProduct.setName(product.getName());
+        updatedProduct.setPrice(product.getPrice());
+        productRepository.save(updatedProduct);
+
+        return new ResponseEntity<Product>(updatedProduct, HttpStatus.OK);
+
     }
 
     @DeleteMapping("products/{productId}")
-    public void delete(@PathVariable("productId") Long productId) {
-        Product deleteProduct = null;
+    public ResponseEntity<Void> delete(@PathVariable("productId") Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("The product does not exist"));
 
-        for (Product prod : this.products) {
-            if (prod.getId().longValue() == productId.longValue()) {
-                deleteProduct = prod;
-                break;
-            }
-        }
-        if (deleteProduct == null) throw new RuntimeException("Product ID not exist");
-
-        this.products.remove(deleteProduct);
+        productRepository.delete(product);
+        return new ResponseEntity(HttpStatus.OK);
 
 
     }
