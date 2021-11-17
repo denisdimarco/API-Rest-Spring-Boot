@@ -4,6 +4,7 @@ import com.denisdimarco.orderapi.entity.Product;
 import com.denisdimarco.orderapi.repository.ProductRepository;
 import com.denisdimarco.orderapi.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +21,8 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("The product does not exist"));
     }
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<Product> findAll(Pageable page) {
+        return productRepository.findAll(page).toList();
     }
 
     @Transactional
