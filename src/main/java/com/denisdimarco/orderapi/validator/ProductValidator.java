@@ -17,7 +17,7 @@ public class ProductValidator {
             throw new ValidateServiceException("Price field is required");
         }
         if(product.getPrice() < 0) {
-            throw  new ValidateServiceException("Price ");
+            throw  new ValidateServiceException("Price value not valid");
         }
     }
 }
