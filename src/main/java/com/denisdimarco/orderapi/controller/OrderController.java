@@ -51,7 +51,7 @@ public class OrderController {
     @PutMapping("/orders")
     public ResponseEntity<WrapperResponse<OrderDTO>> update(@RequestBody OrderDTO order) {
 
-        Order newOrder = null; // orderService.save(converter.fromDTO(order));
+        Order newOrder = orderService.save(converter.fromDTO(order));
 
         return new WrapperResponse<>(true, "success", converter.fromEntity(newOrder))
                 .createResponse();
