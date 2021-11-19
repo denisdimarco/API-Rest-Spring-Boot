@@ -8,10 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ import java.util.List;
 public class OrderController {
 
     OrderConverter converter = new OrderConverter();
-    
+
     @GetMapping("/orders")
     public ResponseEntity<WrapperResponse<List<OrderDTO>>> findAll(
             @RequestParam(name = "pageNumber", required = false, defaultValue = "0") int pageNumber,
@@ -38,5 +35,30 @@ public class OrderController {
         Order order = null; // orderService.findById(id);
         return new WrapperResponse(true, "success", converter.fromEntity(order))
                 .createResponse();
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<WrapperResponse<OrderDTO>> create(@RequestBody OrderDTO order) {
+
+        Order newOrder = null; // orderService.save(converter.fromDTO(order));
+
+        return new WrapperResponse(true, "success", converter.fromEntity(order))
+                .createResponse();
+    }
+
+    @PutMapping("/orders")
+    public ResponseEntity<WrapperResponse<OrderDTO>> update(@RequestBody OrderDTO order) {
+
+        Order newOrder = null; // orderService.save(converter.fromDTO(order));
+
+        return new WrapperResponse(true, "success", converter.fromEntity(order))
+                .createResponse();
+    }
+
+    @DeleteMapping("/orders/id")
+    public ResponseEntity<?> delete(@PathVariable(name="id") Long id) {
+       // orderService.delete(id);
+
+        return new WrapperResponse(true, "success", null).createResponse();
     }
 }
