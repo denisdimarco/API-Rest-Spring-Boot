@@ -22,7 +22,7 @@ public class ProductConverter extends AbstractConverter<Product , ProductDTO> {
     public Product fromDTO(ProductDTO dto) {
 
         if (dto == null) return null;
-        
+
         return Product.builder()
                 .id(dto.getId())
                 .name(dto.getName())
