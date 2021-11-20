@@ -2,11 +2,14 @@ package com.denisdimarco.orderapi.service;
 
 import com.denisdimarco.orderapi.entity.Order;
 import com.denisdimarco.orderapi.entity.OrderLine;
+import com.denisdimarco.orderapi.entity.Product;
 import com.denisdimarco.orderapi.exception.GeneralServiceException;
 import com.denisdimarco.orderapi.exception.NoDataFoundException;
 import com.denisdimarco.orderapi.exception.ValidateServiceException;
 import com.denisdimarco.orderapi.repository.OrderLineRepository;
 import com.denisdimarco.orderapi.repository.OrderRepository;
+import com.denisdimarco.orderapi.repository.ProductRepository;
+import com.denisdimarco.orderapi.validator.OrderValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +28,9 @@ public class OrderService {
 
     @Autowired
     private OrderLineRepository orderLineRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     private static final String ERROR_1 = "Order does not exist.";
 
@@ -69,7 +75,22 @@ public class OrderService {
 
     @Transactional
     public Order save(Order order) {
+
         try {
+
+            OrderValidator.save(order);
+            double total = 0;
+            for(OrderLine line : order.getLines()) {
+
+
+                Product product = productRepository.findById(line.getProduct().getId())
+                        .orElseThrow(() -> new NoDataFoundException("Product " + line.getProduct().getId() + " does not exist."));
+                line.setPrice(product.getPrice());
+                line.setTotal(product.getPrice() * line.getQuantity());
+                total += line.getTotal();
+            }
+            order.setTotal(total);
+
             order.getLines().forEach(line -> line.setOrder(order));
 
             if (order.getId() == null) {
