@@ -16,7 +16,8 @@ import java.util.List;
 @RestController
 public class OrderController {
 
-    OrderConverter converter = new OrderConverter();
+    @Autowired
+    private OrderConverter converter;
 
     @Autowired
     private OrderService orderService;

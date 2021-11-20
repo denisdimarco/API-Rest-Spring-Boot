@@ -4,16 +4,18 @@ import com.denisdimarco.orderapi.dto.OrderDTO;
 import com.denisdimarco.orderapi.dto.OrderLineDTO;
 import com.denisdimarco.orderapi.entity.Order;
 import com.denisdimarco.orderapi.entity.OrderLine;
+import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class OrderConverter extends AbstractConverter<Order, OrderDTO>{
 
-    private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
-    private ProductConverter productConverter = new ProductConverter();
+    private DateTimeFormatter dateTimeFormat;
+    private ProductConverter productConverter;
 
     @Override
     public OrderDTO fromEntity(Order entity) {
