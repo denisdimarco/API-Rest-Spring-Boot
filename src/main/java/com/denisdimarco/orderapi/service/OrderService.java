@@ -26,6 +26,7 @@ public class OrderService {
     @Autowired
     private OrderLineRepository orderLineRepository;
 
+    private static final String ERROR_1 = "Order does not exist.";
 
     public List<Order> findAll(Pageable page) {
         try {
@@ -42,7 +43,7 @@ public class OrderService {
 
     public Order findById(Long id) {
         try {
-            return orderRepository.findById(id).orElseThrow(() -> new NoDataFoundException("Order does not exist."));
+            return orderRepository.findById(id).orElseThrow(() -> new NoDataFoundException(ERROR_1));
         } catch (ValidateServiceException | NoDataFoundException e) {
             log.info(e.getMessage(), e);
             throw e;
@@ -55,7 +56,7 @@ public class OrderService {
     public void delete(Long id) {
         try {
             Order order = orderRepository.findById(id)
-                    .orElseThrow(() -> new NoDataFoundException("Order does not exist."));
+                    .orElseThrow(() -> new NoDataFoundException(ERROR_1));
             orderRepository.delete(order);
         } catch (ValidateServiceException | NoDataFoundException e) {
             log.info(e.getMessage(), e);
@@ -80,7 +81,7 @@ public class OrderService {
 
             //validator
             Order savedOrder = orderRepository.findById(order.getId())
-                    .orElseThrow(() -> new NoDataFoundException("Order does not exist."));
+                    .orElseThrow(() -> new NoDataFoundException(ERROR_1));
             order.setRegisterDate(savedOrder.getRegisterDate());
 
             //To erase deleted lines
