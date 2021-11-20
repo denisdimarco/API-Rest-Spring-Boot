@@ -1,6 +1,8 @@
 package com.denisdimarco.orderapi.controller;
 
 import com.denisdimarco.orderapi.converter.UserConverter;
+import com.denisdimarco.orderapi.dto.LoginRequestDTO;
+import com.denisdimarco.orderapi.dto.LoginResponseDTO;
 import com.denisdimarco.orderapi.dto.SignUpRequestDTO;
 import com.denisdimarco.orderapi.dto.UserDTO;
 import com.denisdimarco.orderapi.entity.User;
@@ -26,5 +28,11 @@ public class UserController {
         User user = userService.createUser(userConverter.signup(request));
         return new WrapperResponse<>(true, "success", userConverter.fromEntity(user))
                 .createResponse();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<WrapperResponse<LoginResponseDTO>> login(@RequestBody LoginRequestDTO request) {
+        LoginResponseDTO response = userService.login(request);
+        return new WrapperResponse<>(true, "success", response).createResponse();
     }
 }
