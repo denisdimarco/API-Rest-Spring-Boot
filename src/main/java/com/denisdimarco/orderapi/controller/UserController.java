@@ -8,6 +8,7 @@ import com.denisdimarco.orderapi.service.UserService;
 import com.denisdimarco.orderapi.utils.WrapperResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,9 +21,8 @@ public class UserController {
     @Autowired
     private UserConverter userConverter;
 
+    @PostMapping("/signup")
     public ResponseEntity<WrapperResponse<UserDTO>> signUp(@RequestBody SignUpRequestDTO request) {
-
-
         User user = userService.createUser(userConverter.signup(request));
         return new WrapperResponse<>(true, "success", userConverter.fromEntity(user))
                 .createResponse();

@@ -6,6 +6,7 @@ import com.denisdimarco.orderapi.exception.GeneralServiceException;
 import com.denisdimarco.orderapi.exception.NoDataFoundException;
 import com.denisdimarco.orderapi.exception.ValidateServiceException;
 import com.denisdimarco.orderapi.repository.UserRepository;
+import com.denisdimarco.orderapi.validator.UserValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserService {
 
     public User createUser(User user) {
         try {
+            UserValidator.signup(user);
 
             User existentUser = userRepository.findByUsername(user.getUsername())
                     .orElse(null);

@@ -2,6 +2,7 @@ package com.denisdimarco.orderapi.config;
 
 import com.denisdimarco.orderapi.converter.OrderConverter;
 import com.denisdimarco.orderapi.converter.ProductConverter;
+import com.denisdimarco.orderapi.converter.UserConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,4 +25,8 @@ public class ConverterConfig {
         return new OrderConverter(format, getProductConverter());
     }
 
+    @Bean
+    public UserConverter getUserConverter() {
+        return new UserConverter();
+    }
 }
