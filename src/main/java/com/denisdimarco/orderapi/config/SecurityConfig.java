@@ -1,17 +1,24 @@
 package com.denisdimarco.orderapi.config;
 
 import com.denisdimarco.orderapi.security.RestAuthenticationEntryPoint;
+import com.denisdimarco.orderapi.security.TokenAuthenticationFilter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
+    @Bean
+    public TokenAuthenticationFilter createTokenAuthenticationFilter(){
+        return new TokenAuthenticationFilter();
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -33,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
         ;
+
+        http.addFilterBefore(createTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
 
