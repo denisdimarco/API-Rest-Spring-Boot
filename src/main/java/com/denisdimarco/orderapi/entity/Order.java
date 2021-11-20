@@ -1,12 +1,10 @@
 package com.denisdimarco.orderapi.entity;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
