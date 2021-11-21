@@ -29,6 +29,11 @@ public class Order {
     @Column(name = "total", nullable = false)
     private Double total;
 
+
+    @ManyToOne
+    @JoinColumn(name = "fk_user", updatable = false)
+    private User user;
+
     @Override
     public int hashCode() {
         final int prime = 31;

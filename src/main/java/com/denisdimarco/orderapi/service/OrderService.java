@@ -3,16 +3,19 @@ package com.denisdimarco.orderapi.service;
 import com.denisdimarco.orderapi.entity.Order;
 import com.denisdimarco.orderapi.entity.OrderLine;
 import com.denisdimarco.orderapi.entity.Product;
+import com.denisdimarco.orderapi.entity.User;
 import com.denisdimarco.orderapi.exception.GeneralServiceException;
 import com.denisdimarco.orderapi.exception.NoDataFoundException;
 import com.denisdimarco.orderapi.exception.ValidateServiceException;
 import com.denisdimarco.orderapi.repository.OrderLineRepository;
 import com.denisdimarco.orderapi.repository.OrderRepository;
 import com.denisdimarco.orderapi.repository.ProductRepository;
+import com.denisdimarco.orderapi.security.UserPrincipal;
 import com.denisdimarco.orderapi.validator.OrderValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,8 +82,10 @@ public class OrderService {
         try {
 
             OrderValidator.save(order);
+
+            User user = UserPrincipal.getCurrentUser();
             double total = 0;
-            for(OrderLine line : order.getLines()) {
+            for (OrderLine line : order.getLines()) {
 
 
                 Product product = productRepository.findById(line.getProduct().getId())
@@ -95,6 +100,7 @@ public class OrderService {
 
             if (order.getId() == null) {
                 //create orders
+                order.setUser(user);
                 order.setRegisterDate(LocalDateTime.now());
                 return orderRepository.save(order);
             }
