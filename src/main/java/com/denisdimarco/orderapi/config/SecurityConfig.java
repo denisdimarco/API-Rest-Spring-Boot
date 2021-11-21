@@ -40,11 +40,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .formLogin()
                 .disable()
+                .httpBasic()
+                .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/signup","/v2/api-docs")
+                .antMatchers("/",
+                        "/error",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/**/*.woff2"
+                )
+                .permitAll()
+
+                .antMatchers(
+                        "/login",
+                        "/signup",
+                        "/v2/api-docs",
+                        "/webjars/**",
+                        "/swagger-resources/**"
+                )
                 .permitAll()
                 .anyRequest()
                 .authenticated()
