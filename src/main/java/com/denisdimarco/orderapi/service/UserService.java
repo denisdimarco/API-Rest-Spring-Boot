@@ -14,6 +14,7 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,6 +30,8 @@ public class UserService {
     private UserConverter userConverter;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
         try {
@@ -38,6 +41,9 @@ public class UserService {
                     .orElse(null);
 
             if (existentUser != null) throw new ValidateServiceException("Username already exist");
+
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
 
             return userRepository.save(user);
 
@@ -56,12 +62,10 @@ public class UserService {
             User user = userRepository.findByUsername(request.getUsername())
                     .orElseThrow(() -> new ValidateServiceException("Incorrect User or Password"));
 
-            if (!user.getPassword().equals(request.getPassword()))
+            if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 throw new ValidateServiceException("Incorrect User or Password");
-
-
+            
             String token = createToken(user);
-
 
             return new LoginResponseDTO(userConverter.fromEntity(user), token);
 
